@@ -1,7 +1,7 @@
 import csv
 import os
 
-from settings import CSV_PATH
+from src.settings import CSV_PATH
 
 
 class Item:
@@ -55,10 +55,9 @@ class Item:
         """
         if not (isinstance(data, int | float | str) or str(data).isdigit()):
             raise ValueError('Неверный тип данных')
-        elif isinstance(data, str | float):
-            if data.count('.') == 1 or type(data) == float:
-                return float(data)
-            return int(data)
+        if str(data).count('.') == 1 or type(data) == float:
+            return float(data)
+        return int(data)
 
     @classmethod
     def instantiate_from_csv(cls) -> None:
@@ -83,7 +82,7 @@ class Item:
         :param string: числовая строка
         :return: целое число
         """
-        if not (isinstance(string, int | float | str) or string.isdigit()):
+        if not isinstance(string, str):
             raise ValueError('Неверный тип данных')
         return int(float(string))
 
