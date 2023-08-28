@@ -1,4 +1,6 @@
 """Здесь надо написать тесты с использованием pytest для модуля item."""
+from unittest.mock import patch
+
 import pytest
 
 from src.item import Item
@@ -87,9 +89,24 @@ def test_item_instantiate_from_csv():
 
 
 @pytest.mark.parametrize('name, price, quantity, expected', [
-    ('Смартфон', 10000, 20, 'Item(name="Смартфон", price="10000", quantity="20")'),
-    ('Ноутбук', 20000, 5, 'Item(name="Ноутбук", price="20000", quantity="5")')
+    ('Смартфон', 10000, 20, "Item('Смартфон', 10000, 20)"),
+    ('Ноутбук', 20000, 5, "Item('Ноутбук', 20000, 5)")
 ])
 def test_item__repr__(name, price, quantity, expected):
     item = Item(name, price, quantity)
     assert item.__repr__() == expected
+
+
+@patch('src.item.CSV_PATH', 'FileNotFoundError.py')
+def test_item_instantiate_from_csv1():
+    with pytest.raises(FileNotFoundError):
+        Item.instantiate_from_csv()
+
+
+@pytest.mark.parametrize('name, price, quantity, expected', [
+    ('Смартфон', 0, 0, 'Смартфон'),
+    ('Ноутбук', 0, 0, 'Ноутбук')
+])
+def test_item__str__(name, price, quantity, expected):
+    item = Item(name, price, quantity)
+    assert item.__str__() == expected
