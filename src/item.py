@@ -23,7 +23,8 @@ class Item:
         self.price = self.__validate_data(price)
         self.quantity = self.__validate_data(quantity)
 
-        self.all.append(self)
+        if self.__class__ == Item:
+            self.all.append(self)
 
     @property
     def name(self):
@@ -41,9 +42,7 @@ class Item:
         :param name: Наименование товара
         :return: Обрезанное наименование товара
         """
-        if len(name) > 10:
-            return name[:10]
-        return name
+        return name[:10]
 
     @classmethod
     def __validate_data(cls, data: int | float | str) -> int | float:
@@ -99,6 +98,11 @@ class Item:
         Применяет установленную скидку для конкретного товара.
         """
         self.price = self.price * self.pay_rate
+
+    def __add__(self, other):
+        if issubclass(type(other), self.__class__):
+            return self.quantity + other.quantity
+        return NotImplemented
 
     def __repr__(self):
         return f"{__class__.__name__}('{self.__name}', {self.price}, {self.quantity})"
