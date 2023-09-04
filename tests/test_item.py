@@ -98,7 +98,7 @@ def test_item__repr__(name, price, quantity, expected):
 
 
 @patch('src.item.CSV_PATH', 'FileNotFoundError.py')
-def test_item_instantiate_from_csv1():
+def test_item_instantiate_from_csv_path():
     with pytest.raises(FileNotFoundError):
         Item.instantiate_from_csv()
 
@@ -110,3 +110,16 @@ def test_item_instantiate_from_csv1():
 def test_item__str__(name, price, quantity, expected):
     item = Item(name, price, quantity)
     assert item.__str__() == expected
+
+
+@pytest.mark.parametrize('name, price, quantity, expected', [
+    ('0', 0, 0, 1),
+    ('1', 1, 1, 2),
+    ('2', 2, 2, 3)
+])
+def test_item__add__(name, price, quantity, expected):
+    item_1 = Item('1', 1, 1)
+    item_2 = Item(name, price, quantity)
+    assert item_1 + item_2 == expected
+    with pytest.raises(TypeError):
+        item_2 + 0
