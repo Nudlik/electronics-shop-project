@@ -1,6 +1,7 @@
 import csv
 import os
 
+from src.custom_exep import InstantiateCSVError
 from src.settings import CSV_PATH
 
 
@@ -66,12 +67,26 @@ class Item:
 
         :return: None
         """
+        # ожидаем csv формата
+        expected = ['name', 'price', 'quantity']
+
         if not os.path.exists(CSV_PATH):
             raise FileNotFoundError(f'Отсутствует csv-файл по пути {CSV_PATH}')
+
         with open(CSV_PATH) as file:
             reader: csv.DictReader = csv.DictReader(file)
+
+            if reader.fieldnames != expected:
+                raise InstantiateCSVError(f'Файл {CSV_PATH} ожидает формата колонок: {expected}')
+
             cls.all.clear()
-            [cls(**row) for row in reader]
+
+            line = 1
+            for row in reader:
+                line += 1
+                if len(row.keys()) != len(expected) or None in row.values() or '' in row.values():
+                    raise InstantiateCSVError(f'Файл {CSV_PATH} поврежден на строке {line}')
+                cls(**row)
 
     @staticmethod
     def string_to_number(string: str) -> int:
@@ -109,3 +124,13 @@ class Item:
 
     def __str__(self):
         return self.__name
+
+
+if __name__ == '__main__':
+    # Файл items.csv отсутствует.
+    Item.instantiate_from_csv()
+    # FileNotFoundError: Отсутствует файл item.csv
+
+    # В файле items.csv удалена последняя колонка.
+    # Item.instantiate_from_csv()
+    # InstantiateCSVError: Файл item.csv поврежден
