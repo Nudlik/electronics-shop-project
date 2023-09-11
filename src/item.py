@@ -84,7 +84,7 @@ class Item:
             line = 1
             for row in reader:
                 line += 1
-                if len(row.keys()) != len(expected) or None in row.values() or '' in row.values():
+                if len(row.keys()) != len(expected) or any(v is None or v == '' for v in row.values()):
                     raise InstantiateCSVError(f'Файл {CSV_PATH} поврежден на строке {line}')
                 cls(**row)
 
