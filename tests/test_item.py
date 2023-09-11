@@ -3,6 +3,7 @@ from unittest.mock import patch
 
 import pytest
 
+from src.custom_exep import InstantiateCSVError
 from src.item import Item
 
 
@@ -123,3 +124,9 @@ def test_item__add__(name, price, quantity, expected):
     assert item_1 + item_2 == expected
     with pytest.raises(TypeError):
         item_2 + 0
+
+
+# @patch('src.item.CSV_PATH', 'tests/test_csv_columns.csv')  # путь до csv-файла с битыми колонками
+# def test_my_function_raises_error():
+#     with pytest.raises(InstantiateCSVError):
+#         Item.instantiate_from_csv()
