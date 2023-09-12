@@ -1,4 +1,5 @@
 """Здесь надо написать тесты с использованием pytest для модуля item."""
+import os.path
 from unittest.mock import patch
 
 import pytest
@@ -126,7 +127,13 @@ def test_item__add__(name, price, quantity, expected):
         item_2 + 0
 
 
-# @patch('src.item.CSV_PATH', 'tests/test_csv_columns.csv')  # путь до csv-файла с битыми колонками
-# def test_my_function_raises_error():
-#     with pytest.raises(InstantiateCSVError):
-#         Item.instantiate_from_csv()
+@patch('src.item.CSV_PATH', 'tests/test_csv_columns.csv')  # путь до csv-файла с битыми колонками
+def test_my_function_raises_error_columns():
+    with pytest.raises(InstantiateCSVError):
+        Item.instantiate_from_csv()
+
+
+@patch('src.item.CSV_PATH', 'tests/test_csv_line.csv')   # путь до csv-файла с битыми строками
+def test_my_function_raises_error_line():
+    with pytest.raises(InstantiateCSVError):
+        Item.instantiate_from_csv()
